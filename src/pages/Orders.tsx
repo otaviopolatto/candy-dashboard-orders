@@ -13,17 +13,26 @@ const Orders = () => {
   const [orders, setOrders] = useState<Order[]>(mockOrdersData);
   const [startDate, setStartDate] = useState('2021-08-20');
   const [endDate, setEndDate] = useState('2021-08-22');
+  const [status, setStatus] = useState<string | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
   const [filteredOrders, setFilteredOrders] = useState<Order[]>(mockOrdersData);
 
   useEffect(() => {
+    // Filter orders by date range and status
     const filtered = orders.filter(order => {
       const orderDate = new Date(order.orderTms).toISOString().split('T')[0];
-      return orderDate >= startDate && orderDate <= endDate;
+      
+      // Date filter
+      const dateMatch = orderDate >= startDate && orderDate <= endDate;
+      
+      // Status filter (if status is null, include all)
+      const statusMatch = status === null || order.orderStatus === status;
+      
+      return dateMatch && statusMatch;
     });
     
     setFilteredOrders(filtered);
-  }, [orders, startDate, endDate]);
+  }, [orders, startDate, endDate, status]);
 
   const requestSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'asc';
@@ -82,8 +91,10 @@ const Orders = () => {
       <OrderSearchFilter 
         startDate={startDate}
         endDate={endDate}
+        status={status}
         onStartDateChange={setStartDate}
         onEndDateChange={setEndDate}
+        onStatusChange={setStatus}
         onSearch={handleSearch}
       />
 

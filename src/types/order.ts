@@ -4,7 +4,7 @@ export interface Order {
   customerId: string;
   orderId: string;
   orderTms: string;
-  orderStatus: string;
+  orderStatus: "COMPLETE" | "PROCESSING" | "CANCELLED";
   storeId: string;
   customerFullName: string;
 }
