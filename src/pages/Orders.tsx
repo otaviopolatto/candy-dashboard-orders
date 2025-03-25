@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   ArrowUpDown, 
@@ -23,9 +22,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "@/hooks/use-toast";
 
-// Mock data based on the provided structure
 const mockOrdersData = [
   {
     "storeName": "Online",
@@ -101,7 +99,6 @@ const mockOrdersData = [
   }
 ];
 
-// Column configuration for the table
 const columns = [
   { key: 'orderId', label: 'Order ID' },
   { key: 'customerFullName', label: 'Customer' },
@@ -119,7 +116,6 @@ const Orders = () => {
   const [filteredOrders, setFilteredOrders] = useState(mockOrdersData);
 
   useEffect(() => {
-    // Filter orders based on date range
     const filtered = orders.filter(order => {
       const orderDate = new Date(order.orderTms).toISOString().split('T')[0];
       return orderDate >= startDate && orderDate <= endDate;
@@ -128,7 +124,6 @@ const Orders = () => {
     setFilteredOrders(filtered);
   }, [orders, startDate, endDate]);
 
-  // Handle sorting
   const requestSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'asc';
     
@@ -138,15 +133,12 @@ const Orders = () => {
     
     setSortConfig({ key, direction });
     
-    // Sort the filtered orders
     const sortedOrders = [...filteredOrders].sort((a, b) => {
       if (key === 'orderTms') {
-        // Date comparison
         return direction === 'asc' 
           ? new Date(a[key]).getTime() - new Date(b[key]).getTime()
           : new Date(b[key]).getTime() - new Date(a[key]).getTime();
       } else {
-        // String comparison
         if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
         if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
         return 0;
@@ -156,22 +148,27 @@ const Orders = () => {
     setFilteredOrders(sortedOrders);
   };
 
-  // Handle search
   const handleSearch = () => {
-    toast.success("Search filters applied successfully");
+    toast({
+      title: "Success",
+      description: "Search filters applied successfully"
+    });
   };
 
-  // Handle edit
   const handleEdit = (orderId: string) => {
-    toast.info(`Editing order ${orderId}`);
+    toast({
+      title: "Info",
+      description: `Editing order ${orderId}`
+    });
   };
 
-  // Handle delete
   const handleDelete = (orderId: string) => {
-    // Filter out the deleted order
     const updatedOrders = orders.filter(order => order.orderId !== orderId);
     setOrders(updatedOrders);
-    toast.success(`Order ${orderId} deleted successfully`);
+    toast({
+      title: "Success",
+      description: `Order ${orderId} deleted successfully`
+    });
   };
 
   return (
@@ -183,7 +180,6 @@ const Orders = () => {
         </Button>
       </div>
 
-      {/* Search filters */}
       <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Search Orders</CardTitle>
@@ -232,7 +228,6 @@ const Orders = () => {
         </CardContent>
       </Card>
 
-      {/* Results table */}
       <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Order Results</CardTitle>
@@ -320,7 +315,6 @@ const Orders = () => {
             </div>
           </div>
 
-          {/* Pagination */}
           <div className="flex items-center justify-between mt-4">
             <div className="text-sm text-muted-foreground">
               Showing <span className="font-medium">1</span> to <span className="font-medium">{filteredOrders.length}</span> of{" "}
